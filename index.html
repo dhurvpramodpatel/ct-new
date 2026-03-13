@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Monthly Pass</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- cache-busted color.css to avoid stale styles -->
+    <link rel="stylesheet" href="color.css?t=<?=Date.now()?>">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#1d86d7">
+    <meta name="theme-color" content="#1d86d7" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="NJ Transit">
+    <link rel="apple-touch-icon" href="icon.png">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+    <!-- QRCode library (minified). Place a local copy qrcode.min.js next to the HTML or use a CDN if allowed. -->
+    <script src="qrcode.min.js"></script>
+
+    <style>
+      /* Minimal inline styles for popup so it shows even if your external CSS hasn't loaded.
+         You can move/replace these by editing style.css later. */
+      /* .qr { cursor: pointer; display:flex; justify-content:center; align-items:center; } */
+      #popupModal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        border-radius: 12px;
+        padding: 18px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+        display: none;
+        z-index: 9999;
+        max-width: 95vw;
+        max-height: 95vh;
+        overflow: hidden;
+        touch-action: none;
+        -webkit-overflow-scrolling: none;
+      }
+      body.modal-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+      }
+      #popupModal .close-btn { display:block; margin-top:12px; text-align:center; cursor:pointer; color:#1d86d7; }
+    </style>
+</head>
+
+<body>
+    <div class="curved-background" id="curved-background">
+        <div class="header">Monthly Pass</div>
+        <div class="card" id="main-container">
+            <div style="display: grid; justify-content: center;">
+                <div class="qr" id="qr-container" onclick="openPopup(); return false;">
+                    <!-- This will be replaced with a generated QR -->
+                    <div id="qrcode" aria-label="QR code"></div>
+                </div>
+                <div class="tap">Tap to enlarge</div>
+                <div style="border-bottom: 1px dashed #00000050;width: 70vw;padding: 0.2vh;"></div>
+                <div class="info">
+                    <div class="interstate">INTERSTATE</div>
+                    <table style="width: 120%;position: relative;left: -10%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 20%; text-align: center; align-content: flex-start;">
+                                    <div class="month" id="pass_month_year">NOV 2025</div>
+                                </td>
+                                <td style="width: 60%; text-align: center;" rowspan="2">
+                                    <div class="zone">
+                                        <div class="number" onclick="updateZoneText()">2</div>
+                                        <div class="text">ZONE RIDE</div>
+                                    </div>
+                                </td>
+                                <td style="width: 20%; text-align: center;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="progress">
+                <div class="color-strip">
+                    <div class="color-block red"></div>
+                    <div class="color-block green"></div>
+                    <div class="color-block blue"></div>
+                </div>
+                <div class="progress-bar"></div>
+                <div class="expiry">Expires in <span id="countdown">1</span> days.</div>
+                <div class="validator">View Onboard Validator Instructions</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup modal for larger QR -->
+    <div id="popupModal" role="dialog" aria-modal="true" aria-hidden="true">
+      <div id="popupQRCode" style="display:flex; justify-content:center; align-items:center;"></div>
+      <div class="close-btn" onclick="closePopup()">Tap to go back</div>
+    </div>
+
+    <script>
+        // -------------------------
+        // QR generation & popup
+        // -------------------------
+        // Example QR text generator - you can replace this with any dynamic string (token, URL, JSON, etc.)
+        function buildQrText() {
+          // You can include dynamic elements: current timestamp, zone number, expiry, device id, etc.
+          const zone = document.querySelector('.number') ? document.querySelector('.number').textContent.trim() : '2';
+          const now = new Date().toISOString();
+          // Example: JSON string encoded into QR (you can switch to a URL or any other text)
+          const payload = {
+            type: "monthly_pass",
+            provider: "NJ Transit",
+            month: document.getElementById('pass_month_year').textContent,
+            zone: zone,
+            issued_at: now,
+          };
+          return JSON.stringify(payload);
+        }
+
+        function generateQRCode() {
+          const qrText = buildQrText();
+
+          // small QR in card
+          const smallEl = document.getElementById("qrcode");
+          smallEl.innerHTML = ""; // clear previous
+          new QRCode(smallEl, {
+            text: qrText,
+            width: 220,
+            height: 220,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.L,
+          });
+
+          // large QR for popup
+          const popupEl = document.getElementById("popupQRCode");
+          popupEl.innerHTML = "";
+          new QRCode(popupEl, {
+            text: qrText,
+            width: 480,
+            height: 480,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.L,
+          });
+        }
+
+        function openPopup() {
+          document.getElementById('popupModal').style.display = 'block';
+          document.getElementById('popupModal').setAttribute('aria-hidden', 'false');
+          document.body.classList.add('modal-open');
+          // regenerate to ensure it contains latest dynamic values (month/zone/expiry)
+          generateQRCode();
+        }
+
+        function closePopup() {
+          document.getElementById('popupModal').style.display = 'none';
+          document.getElementById('popupModal').setAttribute('aria-hidden', 'true');
+          document.body.classList.remove('modal-open');
+        }
+
+        // Also regenerate popup QR when clicking the popup area (optional)
+        document.getElementById('popupModal').addEventListener('click', function (e) {
+          // if user clicks outside the QR, close popup (but not when clicking the QR itself)
+          if (e.target.id === 'popupModal') closePopup();
+        });
+        
+        // Prevent scrolling on mobile when modal is open
+        document.getElementById('popupModal').addEventListener('touchmove', function (e) {
+          e.preventDefault();
+        }, { passive: false });
+        
+        document.getElementById('popupModal').addEventListener('wheel', function (e) {
+          e.preventDefault();
+        }, { passive: false });
+        // -------------------------
+        // Month/Year, countdown & zone logic
+        // -------------------------
+        function updateMonthAndYear() {
+            var currentDate = new Date();
+            var monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+            var month = monthNames[currentDate.getMonth()];
+            var year = currentDate.getFullYear();
+            var content = month + " " + year;
+            document.getElementById("pass_month_year").innerHTML = content;
+        }
+
+        function updateZoneText() {
+            const zoneElement = document.querySelector('.number');
+            let currentZone = parseInt(zoneElement.textContent, 10);
+            if (Number.isNaN(currentZone)) currentZone = 2;
+            currentZone = currentZone === 9 ? 2 : currentZone + 1;
+            zoneElement.textContent = currentZone;
+            // regenerate QR so it reflects the new zone immediately
+            generateQRCode();
+        }
+
+        function updateCountdown() {
+            const countdown = document.getElementById('countdown');
+            const currentDate = new Date();
+            const currentMonth = currentDate.getMonth();
+            const deadlineDate = new Date(currentDate.getFullYear(), currentMonth + 1, 1, 0, 0, 0);
+
+            const timeRemaining = deadlineDate - currentDate;
+
+            const remainingDays = Math.max(0, Math.floor(timeRemaining / (1000 * 60 * 60 * 24)));
+
+            const totalDaysInMonth = new Date(currentDate.getFullYear(), currentMonth + 1, 0).getDate();
+            const daysPassed = currentDate.getDate();
+            const progressPercentage = (daysPassed / totalDaysInMonth) * 100;
+
+            countdown.textContent = `${remainingDays}`;
+
+            // if your CSS progress-bar uses a CSS variable --progress-width (like in your original),
+            // update that variable. If not, adjust this line accordingly.
+            const progressBar = document.querySelector('.progress-bar');
+            if (progressBar) {
+              progressBar.style.setProperty('--progress-width', `${progressPercentage}%`);
+            }
+        }
+
+        // -------------------------
+        // Initialization
+        // -------------------------
+        function initAll() {
+          updateMonthAndYear();
+          updateCountdown();
+          generateQRCode();
+          // Keep countdown updated every second (so the days value moves down at midnight)
+          setInterval(updateCountdown, 1000);
+        }
+
+        // Run when DOM ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initAll);
+        } else {
+          initAll();
+        }
+    </script>
+
+    <!-- Optional: existing session/validation script left intact -->
+    <script>
+        async function validateSession() {
+            const storedPassword = localStorage.getItem("password");
+
+            if (storedPassword) {
+                try {
+                    const response = await fetch("https://testticket-public-api.vercel.app/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ password: storedPassword }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Show main content if session is valid (no separate login UI currently)
+                        // keep as-is — adapt if you re-enable login UI
+                        console.log("Session valid");
+                    } else {
+                        localStorage.removeItem("password");
+                        console.log("Session invalid, cleared password");
+                    }
+                } catch (error) {
+                    console.error("Error validating session:", error);
+                }
+            }
+        }
+
+        // Optionally call validateSession(); currently non-blocking
+        validateSession();
+    </script>
+</body>
+
+</html>
