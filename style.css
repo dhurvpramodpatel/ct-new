@@ -162,7 +162,7 @@ body {
 
 .validator {
     color: #0a0a0a;
-    font-size: 2.5vw;
+    font-size: 2.75vw;
     text-decoration: underline;
     margin-top: 1.5vh;
 }
@@ -171,8 +171,8 @@ body {
     display: flex;
     justify-content: space-between;
     width: 130%;
-    margin-left: 30px;
-    margin-right: 30px;
+    margin-left: 5px;
+    margin-right: 5px;
     padding-bottom: 2vh;
     animation: blinker 1s linear infinite;
 }
