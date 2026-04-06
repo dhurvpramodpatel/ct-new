@@ -20,33 +20,41 @@
     <script src="qrcode.min.js"></script>
 
     <style>
-      /* Minimal inline styles for popup so it shows even if your external CSS hasn't loaded.
+        /* Minimal inline styles for popup so it shows even if your external CSS hasn't loaded.
          You can move/replace these by editing style.css later. */
-      /* .qr { cursor: pointer; display:flex; justify-content:center; align-items:center; } */
-      #popupModal {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #fff;
-        border-radius: 12px;
-        padding: 18px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-        display: none;
-        z-index: 9999;
-        max-width: 95vw;
-        max-height: 95vh;
-        overflow: hidden;
-        touch-action: none;
-        -webkit-overflow-scrolling: none;
-      }
-      body.modal-open {
-        overflow: hidden;
-        position: fixed;
-        width: 100%;
-        height: 100%;
-      }
-      #popupModal .close-btn { display:block; margin-top:12px; text-align:center; cursor:pointer; color:#1d86d7; }
+        /* .qr { cursor: pointer; display:flex; justify-content:center; align-items:center; } */
+        #popupModal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 9999;
+            max-width: 95vw;
+            max-height: 95vh;
+            overflow: hidden;
+            touch-action: none;
+            -webkit-overflow-scrolling: none;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        #popupModal .close-btn {
+            display: block;
+            margin-top: 12px;
+            text-align: center;
+            cursor: pointer;
+            color: #1d86d7;
+        }
     </style>
 </head>
 
@@ -102,8 +110,8 @@
 
     <!-- Popup modal for larger QR -->
     <div id="popupModal" role="dialog" aria-modal="true" aria-hidden="true">
-      <div id="popupQRCode" style="display:flex; justify-content:center; align-items:center;"></div>
-      <div class="close-btn" onclick="closePopup()">Tap to go back</div>
+        <div id="popupQRCode" style="display:flex; justify-content:center; align-items:center;"></div>
+        <div class="close-btn" onclick="closePopup()">Tap to go back</div>
     </div>
 
     <script>
@@ -112,75 +120,75 @@
         // -------------------------
         // Example QR text generator - you can replace this with any dynamic string (token, URL, JSON, etc.)
         function buildQrText() {
-          // You can include dynamic elements: current timestamp, zone number, expiry, device id, etc.
-          const zone = document.querySelector('.number') ? document.querySelector('.number').textContent.trim() : '2';
-          const now = new Date().toISOString();
-          // Example: JSON string encoded into QR (you can switch to a URL or any other text)
-          const payload = {
-            type: "monthly_pass",
-            provider: "NJ Transit",
-            month: document.getElementById('pass_month_year').textContent,
-            zone: zone,
-            issued_at: now,
-          };
-          return JSON.stringify(payload);
+            // You can include dynamic elements: current timestamp, zone number, expiry, device id, etc.
+            const zone = document.querySelector('.number') ? document.querySelector('.number').textContent.trim() : '2';
+            const now = new Date().toISOString();
+            // Example: JSON string encoded into QR (you can switch to a URL or any other text)
+            const payload = {
+                type: "monthly_pass",
+                provider: "NJ Transit",
+                month: document.getElementById('pass_month_year').textContent,
+                zone: zone,
+                issued_at: now,
+            };
+            return JSON.stringify(payload);
         }
 
         function generateQRCode() {
-          const qrText = buildQrText();
+            const qrText = buildQrText();
 
-          // small QR in card
-          const smallEl = document.getElementById("qrcode");
-          smallEl.innerHTML = ""; // clear previous
-          new QRCode(smallEl, {
-            text: qrText,
-            width: 220,
-            height: 220,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.L,
-          });
+            // small QR in card
+            const smallEl = document.getElementById("qrcode");
+            smallEl.innerHTML = ""; // clear previous
+            new QRCode(smallEl, {
+                text: qrText,
+                width: 220,
+                height: 220,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.L,
+            });
 
-          // large QR for popup
-          const popupEl = document.getElementById("popupQRCode");
-          popupEl.innerHTML = "";
-          new QRCode(popupEl, {
-            text: qrText,
-            width: 480,
-            height: 480,
-            colorDark: "#000000",
-            colorLight: "#ffffff",
-            correctLevel: QRCode.CorrectLevel.L,
-          });
+            // large QR for popup
+            const popupEl = document.getElementById("popupQRCode");
+            popupEl.innerHTML = "";
+            new QRCode(popupEl, {
+                text: qrText,
+                width: 480,
+                height: 480,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.L,
+            });
         }
 
         function openPopup() {
-          document.getElementById('popupModal').style.display = 'block';
-          document.getElementById('popupModal').setAttribute('aria-hidden', 'false');
-          document.body.classList.add('modal-open');
-          // regenerate to ensure it contains latest dynamic values (month/zone/expiry)
-          generateQRCode();
+            document.getElementById('popupModal').style.display = 'block';
+            document.getElementById('popupModal').setAttribute('aria-hidden', 'false');
+            document.body.classList.add('modal-open');
+            // regenerate to ensure it contains latest dynamic values (month/zone/expiry)
+            generateQRCode();
         }
 
         function closePopup() {
-          document.getElementById('popupModal').style.display = 'none';
-          document.getElementById('popupModal').setAttribute('aria-hidden', 'true');
-          document.body.classList.remove('modal-open');
+            document.getElementById('popupModal').style.display = 'none';
+            document.getElementById('popupModal').setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
         }
 
         // Also regenerate popup QR when clicking the popup area (optional)
         document.getElementById('popupModal').addEventListener('click', function (e) {
-          // if user clicks outside the QR, close popup (but not when clicking the QR itself)
-          if (e.target.id === 'popupModal') closePopup();
+            // if user clicks outside the QR, close popup (but not when clicking the QR itself)
+            if (e.target.id === 'popupModal') closePopup();
         });
-        
+
         // Prevent scrolling on mobile when modal is open
         document.getElementById('popupModal').addEventListener('touchmove', function (e) {
-          e.preventDefault();
+            e.preventDefault();
         }, { passive: false });
-        
+
         document.getElementById('popupModal').addEventListener('wheel', function (e) {
-          e.preventDefault();
+            e.preventDefault();
         }, { passive: false });
         // -------------------------
         // Month/Year, countdown & zone logic
@@ -224,7 +232,7 @@
             // update that variable. If not, adjust this line accordingly.
             const progressBar = document.querySelector('.progress-bar');
             if (progressBar) {
-              progressBar.style.setProperty('--progress-width', `${progressPercentage}%`);
+                progressBar.style.setProperty('--progress-width', `${progressPercentage}%`);
             }
         }
 
@@ -232,18 +240,18 @@
         // Initialization
         // -------------------------
         function initAll() {
-          updateMonthAndYear();
-          updateCountdown();
-          generateQRCode();
-          // Keep countdown updated every second (so the days value moves down at midnight)
-          setInterval(updateCountdown, 1000);
+            updateMonthAndYear();
+            updateCountdown();
+            generateQRCode();
+            // Keep countdown updated every second (so the days value moves down at midnight)
+            setInterval(updateCountdown, 1000);
         }
 
         // Run when DOM ready
         if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', initAll);
+            document.addEventListener('DOMContentLoaded', initAll);
         } else {
-          initAll();
+            initAll();
         }
     </script>
 
