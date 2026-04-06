@@ -1,19 +1,8 @@
 :root {
-    /*  Pass color  */
-    --first: #f95b5c  ;
-    /*  strip colors */
-    --stripone: #445159   ;
-    --striptwo: #8c9592   ;
-    --stripthree: #39809c  ;
+    /*  Pass color (purple to match screenshot)  */
+    --first: #bb89bd;
+    /*  strip colors (green, brown, pink to match screenshot) */
+    --stripone: #4a7c59;
+    --striptwo: #7b4a3a;
+    --stripthree: #f0b0b0;
 }
-/* c b grayish-green #61ae63  */
-/* light purple #c488c4  */
-/* purple #bb89bd */
-/* green #63ad61 */
-/* French Blue #3683f6 */
-/* Dark Gray #a1a1a1  */
-/*  gray #979797 */
-/* another light pink #f7c7cf */
-/* Light Thulian Pink #f6c7cf  */
-/* yellow #f6d836 */
-/* red #f65d5d */
