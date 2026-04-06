@@ -20,7 +20,7 @@ body {
 
 .header {
     width: 100%;
-    padding: 3.75vh 0 3vh 0;
+    padding: 3vh 0 3vh 0;
     color: white;
     font-size: 1.75vh;
     font-weight: 600;
@@ -31,7 +31,7 @@ body {
 .card {
     background: #fff;
     width: 84vw;
-    height: 83vh;
+    height: 83.75vh;
     max-width: 400px;
     border-radius: 20px;
     padding: 3.5vh 1vh 1vh;
