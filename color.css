@@ -1,8 +1,8 @@
 :root {
     /*  Pass color (purple to match screenshot)  */
-    --first: #fede33;
+    --first: #ff6264;
     /*  strip colors (green, brown, pink to match screenshot) */
-    --stripone: #5b4d5c;
-    --striptwo: #eb90f0;
-    --stripthree: #7f79d3;
+    --stripone: #d1b866;
+    --striptwo: #ffc58b;
+    --stripthree: #f89834;
 }
