@@ -139,9 +139,9 @@ body {
 
 .progress-bar {
     width: 150%;
-    height: 4px;
+    height: 8px;
     background: #eee;
-    border-radius: 4px;
+    border-radius: 2px;
     overflow: hidden;
     position: relative;
 }
