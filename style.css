@@ -40,7 +40,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin-top: -1.5vh;
+    margin-top: -1vh;
     /* pushes progress to bottom */
 }
 
