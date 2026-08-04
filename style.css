@@ -62,9 +62,9 @@ body {
 .qr img {
     width: 97%;
     height: 100%;
-    padding: 1.75vw;
+    padding: 1.95vw;
     background: white;
-    transform: translate(-4.5px, 0.25px);
+    transform: translate(-5.75px, 0.25px);
 }
 
 .tap {
