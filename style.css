@@ -9,8 +9,8 @@ body {
     height: 34.5vh;
     max-height: 960px;
     background-color: #1d86d7;
-    border-bottom-left-radius: 3% 3%;
-    border-bottom-right-radius: 3% 3%;
+    border-bottom-left-radius: 4% 6%;
+    border-bottom-right-radius: 4% 6%;
     display: grid;
     justify-content: center;
     align-items: center;
