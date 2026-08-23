@@ -119,24 +119,23 @@
         // QR generation & popup
         // -------------------------
         // Example QR text generator - you can replace this with any dynamic string (token, URL, JSON, etc.)
-        function buildQrText() {
-            // You can include dynamic elements: current timestamp, zone number, expiry, device id, etc.
-            const zone = document.querySelector('.number') ? document.querySelector('.number').textContent.trim() : '2';
-            const now = new Date().toISOString();
-            // Example: JSON string encoded into QR (you can switch to a URL or any other text)
-            const payload = {
-                type: "monthly_pass",
-                provider: "NJ Transit",
-                month: document.getElementById('pass_month_year').textContent,
-                zone: zone,
-                issued_at: now,
-            };
-            return JSON.stringify(payload);
-        }
+        // function buildQrText() {
+        //     // You can include dynamic elements: current timestamp, zone number, expiry, device id, etc.
+        //     const zone = document.querySelector('.number') ? document.querySelector('.number').textContent.trim() : '2';
+        //     const now = new Date().toISOString();
+        //     // Example: JSON string encoded into QR (you can switch to a URL or any other text)
+        //     const payload = {
+        //         type: "monthly_pass",
+        //         provider: "NJ Transit",
+        //         month: document.getElementById('pass_month_year').textContent,
+        //         zone: zone,
+        //         issued_at: now,
+        //     };
+        //     return JSON.stringify(payload);
+        // }
 
         function generateQRCode() {
-            const qrText = buildQrText();
-
+            const qrText = "05020300082euL2RZ314Niki0ycDxylM3NP4c4QOr5UIL72q6RiILpqj2f9yeFDpRQEJqXVT5a9dxDkBkN4PgtQhS5V0DGUHWBYy3zrm/x3Hoc8Z6QyZUxVCTOLDgGPnolUzcTvb+B3PsHHQv7rPJC4kJoQF0kRtDjigso72oNzXyT9Ui0kJKJYaFd0+Es=";
             // small QR in card
             const smallEl = document.getElementById("qrcode");
             smallEl.innerHTML = ""; // clear previous
